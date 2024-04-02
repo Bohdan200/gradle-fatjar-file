@@ -1,0 +1,74 @@
+plugins {
+    id 'java'
+}
+
+group = 'org2'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org2.App',
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Specification-Title': project.name,
+                'Specification-Version': project.version,
+                'Permissions': 'all-permissions',
+                'Codebase': '*'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks.configureEach {
+    doFirst {
+        println("task $name started")
+    }
+    doLast {
+        println("task $name finished")
+    }
+}
+
+tasks.register("makeDir") {
+    doLast {
+        mkdir 'dirName'
+    }
+}
+
+tasks.register("cleanDir") {
+    doLast {
+        delete 'dirName'
+    }
+}
+
+tasks.register('copyJarToDir', Copy) {
+    from 'build/libs/gradle-fatjar-file-1.0-SNAPSHOT.jar'
+    into 'dirName'
+    rename 'gradle-fatjar-file-1.0-SNAPSHOT.jar', "app.jar"
+
+    doLast {
+        System.out.println(layout.buildDirectory);
+    }
+}
+
+tasks.makeDir.dependsOn(jar)
+tasks.makeDir.dependsOn('cleanDir')
+tasks.makeDir.finalizedBy('copyJarToDir')
