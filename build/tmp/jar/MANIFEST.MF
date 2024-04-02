@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Main-Class: org2.App
+Implementation-Title: gradle-fatjar-file
+Implementation-Version: 1.0-SNAPSHOT
+Specification-Title: gradle-fatjar-file
+Specification-Version: 1.0-SNAPSHOT
+Permissions: all-permissions
+Codebase: *
+
